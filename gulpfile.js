@@ -3,6 +3,7 @@ const gulp = require('gulp');
 const fs = require('fs');
 const Ajv = require('ajv');
 const assert = require('assert');
+const mocha = require('gulp-mocha');
 const PluginError = require('plugin-error');
 const runSequence = require('run-sequence');
 const browserSync = require('browser-sync').create();
@@ -184,6 +185,31 @@ gulp.task('lint', function() {
     .pipe(eslint())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
+});
+
+// mocha test task
+gulp.task('mocha-test', function() {
+  return gulp.src(['./test/**/*.js'], {read: false})
+    .pipe(mocha({ui: 'bdd'}))
+});
+
+gulp.task('mocha-handlebars', function () {
+  const templateData = {},
+    options = {
+      batch: ['./src/handlebars/partials']
+    };
+
+  return gulp.src('./src/handlebars/*.handlebars')
+    .pipe(handlebars(templateData, options))
+    .on('error', gutil.log)
+    .pipe(rename({
+      extname: '.html'
+    }))
+    .pipe(gulp.dest('./test/html'));
+});
+
+gulp.task('test', function() {
+  return runSequence('mocha-handlebars', 'mocha-test');
 });
 
 // sitemap task

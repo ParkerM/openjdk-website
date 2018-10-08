@@ -1,0 +1,2 @@
+# Alternatively, call require('jsdom-global')() in test setup
+--require jsdom-global/register
