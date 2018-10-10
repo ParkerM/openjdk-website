@@ -8,6 +8,7 @@
     "json-validate": "gulp json-validate",
     "lint": "eslint **/*.js",
     "lint-fix": "npm run lint --- --fix",
+    "mocha": "gulp test",
     "test": "npm run lint && npm run json-validate"
   },
   "author": "Joe Brady",

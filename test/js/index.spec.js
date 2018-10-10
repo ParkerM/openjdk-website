@@ -6,16 +6,18 @@ const sinonChai = require('sinon-chai');
 const expect = chai.expect;
 chai.use(sinonChai);
 
-describe('Index', function () {
+describe('Index', () => {
   let indexModule;
+  let el;
 
   beforeEach(() => {
     return JSDOM.fromFile('./test/html/index.html')
-      .then(() => indexModule = rewire('../../src/js/index'));
+      .then(() => indexModule = rewire('../../src/js/index'))
+      .then(() => el = document.body);
   });
 
-  describe('onLoad', function () {
-    it('should initialize download section', function () {
+  describe('onLoad', () => {
+    it('should initialize download section', () => {
       const setDownloadSection = sinon.spy();
       indexModule.__with__({
         setDownloadSection: setDownloadSection
