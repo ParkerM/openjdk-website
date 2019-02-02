@@ -26,15 +26,42 @@ const browserify = require('browserify');
 const source = require('vinyl-source-stream');
 const buffer = require('vinyl-buffer');
 
+// json task
+gulp.task('json', () => gulp.src('./src/json/*.json').pipe(gulp.dest('./dist/json/')));
+
 // default task
-gulp.task('default', () => {
-  runSequence('clean','json-validate',['json','scripts','styles','images','icon'],'handlebars','inject','watch','browser-sync');
-});
+gulp.task('default', gulp.series(
+    'clean',
+    'json-validate',
+    gulp.parallel(
+        'json',
+        'scripts',
+        'styles',
+        'images',
+        'icon'
+    ),
+    'handlebars',
+    'inject',
+    'watch',
+    'browser-sync')
+);
 
 // build task
-gulp.task('build', () => {
-  runSequence('clean',['json','scripts','styles','images','icon'],'handlebars','inject','sitemap','robots','lint');
-});
+gulp.task('build', gulp.series(
+    'clean',
+    gulp.parallel(
+        'json',
+        'scripts',
+        'styles',
+        'images',
+        'icon'
+    ),
+    'handlebars',
+    'inject',
+    'sitemap',
+    'robots',
+    'lint')
+);
 
 // clean task (deletes /dist dir)
 gulp.task('clean', () => gulp.src('dist', {read: false}).pipe(clean()));
@@ -76,9 +103,6 @@ gulp.task('handlebars', () => {
     }))
     .pipe(gulp.dest('./'));
 });
-
-// json task
-gulp.task('json', () => gulp.src('./src/json/*.json').pipe(gulp.dest('./dist/json/')));
 
 // scripts task
 gulp.task('scripts', () => {
